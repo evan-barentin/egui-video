@@ -109,6 +109,8 @@ pub struct PlayerOptions {
     pub max_audio_volume: f32,
     /// The texture options for the displayed video frame.
     pub texture_options: TextureOptions,
+    /// Should the default control ui be rendered
+    pub render_control_ui: bool,
 }
 
 impl Default for PlayerOptions {
@@ -118,6 +120,7 @@ impl Default for PlayerOptions {
             max_audio_volume: 1.,
             audio_volume: Shared::new(0.5),
             texture_options: TextureOptions::default(),
+            render_control_ui: true,
         }
     }
 }
@@ -514,7 +517,9 @@ impl Player {
     /// Draw the video frame and player controls and process state changes.
     pub fn ui(&mut self, ui: &mut Ui, size: Vec2) -> egui::Response {
         let frame_response = self.render_frame(ui, size);
-        self.render_controls(ui, &frame_response);
+        if self.options.render_control_ui {
+            self.render_controls(ui, &frame_response);
+        }
         self.render_subtitles(ui, &frame_response);
         self.process_state();
         frame_response
@@ -523,7 +528,9 @@ impl Player {
     /// Draw the video frame and player controls with a specific rect, and process state changes.
     pub fn ui_at(&mut self, ui: &mut Ui, rect: Rect) -> egui::Response {
         let frame_response = self.render_frame_at(ui, rect);
-        self.render_controls(ui, &frame_response);
+        if self.options.render_control_ui {
+            self.render_controls(ui, &frame_response);
+        }
         self.render_subtitles(ui, &frame_response);
         self.process_state();
         frame_response
